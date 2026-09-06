@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Chatbot</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial;
+    background:linear-gradient(135deg, #000000bd, #ffe100);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.chatbox{
+    width:420px;
+    height:600px;
+    background:#ffffff;
+    border-radius:15px;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+}
+
+.header{
+    background:#ffe100;
+    color:#000000;
+    padding:20px;
+    text-align:center;
+    font: size 15px;
+}
+
+.messages{
+    flex:1;
+    overflow-y:auto;
+    padding:15px;
+}
+
+.user,
+.bot{
+    padding:12px;
+    margin:10px 0;
+    border-radius:10px;
+    max-width:80%;
+}
+
+.user{
+    background:#ffe100;
+    color:rgb(0, 0, 0);
+    margin-left:auto;
+}
+
+.bot{
+    background:#334155;
+    color:white;
+}
+
+.input-area{
+    display:flex;
+    padding:10px;
+    background:#ffe100;;
+}
+
+input{
+    flex:1;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+}
+
+button{
+    margin-left:10px;
+    padding:12px 20px;
+    border:none;
+    border-radius:10px;
+    background:#ffffff;
+    color:rgb(0, 0, 0);
+    cursor:pointer;
+    font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="chatbox">
+    <div class="header">
+        <h1>AI Chatbot</h1>
+        <h3>Developed By : RAJAN SHARMA</h3>
+    </div>
+
+    <div class="messages" id="messages"></div>
+
+    <div class="input-area">
+        <input
+            id="message"
+            placeholder="Type a message..."
+        >
+        <button onclick="sendMessage()">
+            Send
+        </button>
+    </div>
+</div>
+
+<script>
+async function sendMessage() {
+
+    const input =
+        document.getElementById("message");
+
+    const text = input.value.trim();
+
+    if(!text) return;
+
+    const messages =
+        document.getElementById("messages");
+
+    messages.innerHTML +=
+        `<div class="user">${text}</div>`;
+
+    input.value = "";
+
+    const response = await fetch("/chat", {
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+            message:text
+        })
+    });
+
+    const data = await response.json();
+
+    messages.innerHTML +=
+        `<div class="bot">${data.reply}</div>`;
+
+    messages.scrollTop =
+        messages.scrollHeight;
+}
+</script>
+
+</body>
+</html>
